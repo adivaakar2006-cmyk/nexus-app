@@ -36,7 +36,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
     <div className={styles.container}>
       <header className={styles.mobileHeader}>
         <div className={styles.mobileLogo}>Nexus</div>
-        <button className={styles.menuButton} onClick={() => setIsSidebarOpen(true)}>
+        <button className={styles.menuButton} onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
           <Menu size={24} />
         </button>
       </header>
