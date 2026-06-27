@@ -52,46 +52,48 @@ export default function Calendar() {
       </header>
 
       <div className={styles.calendar}>
-        <div className={styles.weekdays}>
-          {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-            <div key={day} className={styles.weekday}>{day}</div>
-          ))}
-        </div>
-        
-        <div className={styles.daysGrid}>
-          {days.map(day => {
-            const dayApps = getApplicationsForDay(day);
-            const isCurrMonth = isSameMonth(day, currentDate);
-            const isCurrDay = isToday(day);
+        <div className={styles.calendarInner}>
+          <div className={styles.weekdays}>
+            {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
+              <div key={day} className={styles.weekday}>{day}</div>
+            ))}
+          </div>
+          
+          <div className={styles.daysGrid}>
+            {days.map(day => {
+              const dayApps = getApplicationsForDay(day);
+              const isCurrMonth = isSameMonth(day, currentDate);
+              const isCurrDay = isToday(day);
 
-            return (
-              <div 
-                key={day.toISOString()} 
-                className={`
-                  ${styles.dayCell} 
-                  ${!isCurrMonth ? styles.otherMonth : ''} 
-                  ${isCurrDay ? styles.today : ''}
-                `}
-              >
-                <div className={styles.dayNumber}>{format(day, 'd')}</div>
-                <div className={styles.eventsContainer}>
-                  {dayApps.map(app => (
-                    <div 
-                      key={app.id} 
-                      className={`
-                        ${styles.event} 
-                        ${app.status === 'Interviewing' ? styles.eventInterviewing : ''}
-                        ${app.status === 'Offer' ? styles.eventOffer : ''}
-                      `}
-                      title={`${app.company} - ${app.position}`}
-                    >
-                      {app.company}
-                    </div>
-                  ))}
+              return (
+                <div 
+                  key={day.toISOString()} 
+                  className={`
+                    ${styles.dayCell} 
+                    ${!isCurrMonth ? styles.otherMonth : ''} 
+                    ${isCurrDay ? styles.today : ''}
+                  `}
+                >
+                  <div className={styles.dayNumber}>{format(day, 'd')}</div>
+                  <div className={styles.eventsContainer}>
+                    {dayApps.map(app => (
+                      <div 
+                        key={app.id} 
+                        className={`
+                          ${styles.event} 
+                          ${app.status === 'Interviewing' ? styles.eventInterviewing : ''}
+                          ${app.status === 'Offer' ? styles.eventOffer : ''}
+                        `}
+                        title={`${app.company} - ${app.position}`}
+                      >
+                        {app.company}
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
       </div>
     </div>
