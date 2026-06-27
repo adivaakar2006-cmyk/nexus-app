@@ -5,7 +5,7 @@ import React, { useState, useEffect } from 'react';
 import styles from './settings.module.css';
 import { useAuth } from '@/contexts/AuthContext';
 import { api } from '@/lib/api';
-import { User, Shield, CreditCard, Bell, LogOut, CheckCircle, AlertCircle, X, QrCode } from 'lucide-react';
+import { User, Shield, CreditCard, Bell, LogOut, CheckCircle, AlertCircle, X, QrCode, Eye, EyeOff } from 'lucide-react';
 
 export default function Settings() {
   const { user, updateUser, logout } = useAuth();
@@ -15,10 +15,14 @@ export default function Settings() {
   // Profile Form State
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const [isSaving, setIsSaving] = useState(false);
 
   // Security State
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isPasswordSaving, setIsPasswordSaving] = useState(false);
   const [twoFactorEnabled, setTwoFactorEnabled] = useState(false);
   const [show2FAModal, setShow2FAModal] = useState(false);
   const [twoFactorCode, setTwoFactorCode] = useState('');
@@ -62,7 +66,6 @@ export default function Settings() {
       const updates: any = {};
       if (name !== user?.name) updates.name = name;
       if (email !== user?.email) updates.email = email;
-      if (password) updates.password = password;
 
       if (Object.keys(updates).length === 0) {
         showMessage('info', 'No changes to save.');
@@ -71,12 +74,35 @@ export default function Settings() {
       }
       const res = await api.put('/api/auth/profile', updates);
       updateUser(res.user);
-      setPassword('');
       showMessage('success', 'Profile updated successfully!');
     } catch (err: any) {
       showMessage('error', err.message || 'Failed to update profile.');
     } finally {
       setIsSaving(false);
+    }
+  };
+
+  const handlePasswordSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (password !== confirmPassword) {
+      showMessage('error', 'Passwords do not match.');
+      return;
+    }
+    if (password.length < 6) {
+      showMessage('error', 'Password must be at least 6 characters.');
+      return;
+    }
+    setIsPasswordSaving(true);
+    try {
+      const res = await api.put('/api/auth/profile', { password });
+      updateUser(res.user);
+      setPassword('');
+      setConfirmPassword('');
+      showMessage('success', 'Password updated successfully!');
+    } catch (err: any) {
+      showMessage('error', err.message || 'Failed to update password.');
+    } finally {
+      setIsPasswordSaving(false);
     }
   };
 
@@ -225,17 +251,6 @@ export default function Settings() {
                     required
                   />
                 </div>
-                <div className={styles.formGroup}>
-                  <label htmlFor="password">New Password (Optional)</label>
-                  <input 
-                    id="password"
-                    type="password" 
-                    className={styles.input}
-                    value={password} 
-                    onChange={e => setPassword(e.target.value)}
-                    placeholder="Leave blank to keep current password"
-                  />
-                </div>
                 <div className={styles.actions}>
                   <button type="submit" className={styles.primaryBtn} disabled={isSaving}>
                     {isSaving ? 'Saving...' : 'Save Changes'}
@@ -252,7 +267,7 @@ export default function Settings() {
                 <p>Manage your account security and active sessions.</p>
               </div>
               <div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', paddingBottom: '1.5rem', borderBottom: '1px solid var(--border-color)' }}>
                   <div>
                     <h3 style={{ marginBottom: '0.25rem' }}>Two-Factor Authentication</h3>
                     <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>
@@ -268,6 +283,61 @@ export default function Settings() {
                       Enable 2FA
                     </button>
                   )}
+                </div>
+
+                <div style={{ marginTop: '1.5rem' }}>
+                  <h3 style={{ marginBottom: '1rem' }}>Change Password</h3>
+                  <form className={styles.form} onSubmit={handlePasswordSubmit}>
+                    <div className={styles.formGroup}>
+                      <label htmlFor="new-password">New Password</label>
+                      <div className={styles.passwordWrapper}>
+                        <input 
+                          id="new-password"
+                          type={showPassword ? "text" : "password"} 
+                          className={styles.input}
+                          value={password} 
+                          onChange={e => setPassword(e.target.value)}
+                          required
+                          placeholder="Enter new password"
+                        />
+                        <button 
+                          type="button"
+                          className={styles.passwordToggle}
+                          onClick={() => setShowPassword(!showPassword)}
+                          aria-label={showPassword ? "Hide password" : "Show password"}
+                        >
+                          {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                        </button>
+                      </div>
+                    </div>
+                    <div className={styles.formGroup}>
+                      <label htmlFor="confirm-password">Confirm Password</label>
+                      <div className={styles.passwordWrapper}>
+                        <input 
+                          id="confirm-password"
+                          type={showConfirmPassword ? "text" : "password"} 
+                          className={styles.input}
+                          value={confirmPassword} 
+                          onChange={e => setConfirmPassword(e.target.value)}
+                          required
+                          placeholder="Confirm new password"
+                        />
+                        <button 
+                          type="button"
+                          className={styles.passwordToggle}
+                          onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                          aria-label={showConfirmPassword ? "Hide password" : "Show password"}
+                        >
+                          {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                        </button>
+                      </div>
+                    </div>
+                    <div className={styles.actions} style={{ paddingTop: '1rem' }}>
+                      <button type="submit" className={styles.primaryBtn} disabled={isPasswordSaving}>
+                        {isPasswordSaving ? 'Updating...' : 'Update Password'}
+                      </button>
+                    </div>
+                  </form>
                 </div>
               </div>
             </section>
