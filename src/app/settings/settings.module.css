@@ -236,4 +236,16 @@
   .settingsLayout {
     grid-template-columns: 1fr;
   }
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  .actions {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .actions button {
+    width: 100%;
+  }
 }

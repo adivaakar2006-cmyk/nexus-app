@@ -334,3 +334,18 @@
   color: var(--text-primary);
   background: rgba(255, 255, 255, 0.05);
 }
+
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  .modal {
+    padding: 1.25rem;
+    width: calc(100% - 2rem);
+  }
+  .modalHeader h2 {
+    font-size: 1.25rem;
+  }
+}
