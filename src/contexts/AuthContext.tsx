@@ -9,6 +9,13 @@ interface User {
   id: string;
   name: string;
   email: string;
+  twoFactorEnabled?: boolean;
+  plan?: 'Intern' | 'Pro';
+  preferences?: {
+    reminders: boolean;
+    updates: boolean;
+    weekly: boolean;
+  };
 }
 
 interface AuthContextType {
