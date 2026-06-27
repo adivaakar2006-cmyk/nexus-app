@@ -1,0 +1,61 @@
+{
+  "users": [
+    {
+      "id": "69f078b0-e098-47ef-ad48-8842198ba48c",
+      "name": "Divaakar",
+      "email": "adivaakar2006@gmail.com",
+      "passwordHash": "$2b$10$qF1vGNWNI0TWFgwuas1fROA896oQQU5Z.HDirJTopKmfXSyjDYlV2",
+      "createdAt": "2026-06-27T16:02:40.679Z"
+    },
+    {
+      "id": "3c3a3ed7-2e56-480c-9311-6c56c70b28a1",
+      "name": "Alex Developer",
+      "email": "alex.intern@example.com",
+      "passwordHash": "$2b$10$MUVyKtggmxXAwMdV.ohjQeiixZYxcvtKaU6DKDdJWKNYZZ7A5XJD2",
+      "createdAt": "2026-06-27T16:05:41.621Z",
+      "preferences": {
+        "reminders": false,
+        "updates": false,
+        "weekly": false
+      }
+    }
+  ],
+  "applications": [
+    {
+      "id": "10499e50-b033-4ae6-a589-7dd8ba5f30a4",
+      "userId": "3c3a3ed7-2e56-480c-9311-6c56c70b28a1",
+      "company": "Google",
+      "position": "Software Engineering Intern",
+      "status": "Interviewing",
+      "appliedDate": "2026-06-01",
+      "salary": "$9,000/mo",
+      "notes": "First round technical interview went well.",
+      "createdAt": "2026-06-27T16:05:41.622Z",
+      "updatedAt": "2026-06-27T16:05:41.622Z"
+    },
+    {
+      "id": "d5f059cb-bfc4-4852-8ef5-32b2d4621cf5",
+      "userId": "3c3a3ed7-2e56-480c-9311-6c56c70b28a1",
+      "company": "Microsoft",
+      "position": "Frontend Developer Intern",
+      "status": "Applied",
+      "appliedDate": "2026-06-15",
+      "salary": "",
+      "notes": "Applied through university portal.",
+      "createdAt": "2026-06-27T16:05:41.622Z",
+      "updatedAt": "2026-06-27T16:05:41.622Z"
+    },
+    {
+      "id": "292ec7a1-0728-4d06-8074-c39b8a1b5953",
+      "userId": "3c3a3ed7-2e56-480c-9311-6c56c70b28a1",
+      "company": "Vercel",
+      "position": "React Engineer Intern",
+      "status": "Wishlist",
+      "appliedDate": "2026-06-27",
+      "salary": "$100/hr",
+      "notes": "Need to finish this portfolio project first!",
+      "createdAt": "2026-06-27T16:05:41.622Z",
+      "updatedAt": "2026-06-27T16:05:41.622Z"
+    }
+  ]
+}
