@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getDb, saveDb, Application } from '@/lib/db';
+import { db, Application } from '@/lib/db';
 import { verifyToken } from '@/lib/auth';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -18,14 +18,17 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const db = await getDb();
-    const userApplications = db.applications.filter(app => app.userId === userId);
+    const appsRef = db.collection('applications');
+    const snapshot = await appsRef.where('userId', '==', userId).get();
+    
+    const userApplications: Application[] = snapshot.docs.map((doc: any) => doc.data() as Application);
     
     // Sort by updated date descending
     userApplications.sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
 
     return NextResponse.json(userApplications);
   } catch (error) {
+    console.error('Fetch applications error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
@@ -44,9 +47,6 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    // Optional: fetch logo from logo.dev (can also be done on frontend)
-    // For now we store the domain or let frontend handle it.
-
     const newApp: Application = {
       id: uuidv4(),
       userId,
@@ -60,12 +60,11 @@ export async function POST(request: Request) {
       updatedAt: new Date().toISOString(),
     };
 
-    const db = await getDb();
-    db.applications.push(newApp);
-    await saveDb(db);
+    await db.collection('applications').doc(newApp.id).set(newApp);
 
     return NextResponse.json(newApp, { status: 201 });
   } catch (error) {
+    console.error('Create application error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

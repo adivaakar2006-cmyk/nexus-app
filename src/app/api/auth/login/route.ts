@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getDb } from '@/lib/db';
+import { db, User } from '@/lib/db';
 import { verifyPassword, generateToken } from '@/lib/auth';
 
 export async function POST(request: Request) {
@@ -10,13 +10,14 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    const db = await getDb();
-    const user = db.users.find(u => u.email === email);
+    const usersRef = db.collection('users');
+    const snapshot = await usersRef.where('email', '==', email).limit(1).get();
 
-    if (!user) {
+    if (snapshot.empty) {
       return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
     }
 
+    const user = snapshot.docs[0].data() as User;
     const isValid = await verifyPassword(password, user.passwordHash);
 
     if (!isValid) {

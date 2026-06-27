@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getDb, saveDb } from '@/lib/db';
+import { db, Application } from '@/lib/db';
 import { verifyToken } from '@/lib/auth';
 
 const getUserId = (request: Request): string | null => {
@@ -19,28 +19,33 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
 
     const { id } = await params;
     const body = await request.json();
-    const db = await getDb();
     
-    const index = db.applications.findIndex(app => app.id === id && app.userId === userId);
+    const appRef = db.collection('applications').doc(id);
+    const appDoc = await appRef.get();
     
-    if (index === -1) {
+    if (!appDoc.exists) {
+      return NextResponse.json({ error: 'Application not found' }, { status: 404 });
+    }
+    
+    const currentApp = appDoc.data() as Application;
+    if (currentApp.userId !== userId) {
       return NextResponse.json({ error: 'Application not found' }, { status: 404 });
     }
 
-    const currentApp = db.applications[index];
-    
-    db.applications[index] = {
-      ...currentApp,
+    const updates = {
       ...body,
       id: currentApp.id, // Prevent overriding ID
       userId: currentApp.userId, // Prevent overriding User ID
       updatedAt: new Date().toISOString()
     };
 
-    await saveDb(db);
-    return NextResponse.json(db.applications[index]);
+    await appRef.update(updates);
+    
+    const updatedApp = { ...currentApp, ...updates };
+    return NextResponse.json(updatedApp);
 
   } catch (error) {
+    console.error('Update application error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
@@ -53,20 +58,25 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
     }
 
     const { id } = await params;
-    const db = await getDb();
     
-    const index = db.applications.findIndex(app => app.id === id && app.userId === userId);
+    const appRef = db.collection('applications').doc(id);
+    const appDoc = await appRef.get();
     
-    if (index === -1) {
+    if (!appDoc.exists) {
+      return NextResponse.json({ error: 'Application not found' }, { status: 404 });
+    }
+    
+    const currentApp = appDoc.data() as Application;
+    if (currentApp.userId !== userId) {
       return NextResponse.json({ error: 'Application not found' }, { status: 404 });
     }
 
-    db.applications.splice(index, 1);
-    await saveDb(db);
+    await appRef.delete();
     
     return NextResponse.json({ success: true });
 
   } catch (error) {
+    console.error('Delete application error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

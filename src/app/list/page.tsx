@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import styles from './list.module.css';
 import { useApplications } from '@/contexts/ApplicationContext';
 import { Application, ApplicationStatus } from '@/lib/db';
@@ -71,7 +71,7 @@ export default function ListView() {
   const paginatedData = filteredAndSorted.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   // Reset to page 1 when filters change
-  useMemo(() => {
+  useEffect(() => {
     setCurrentPage(1);
   }, [searchTerm, statusFilter]);
 

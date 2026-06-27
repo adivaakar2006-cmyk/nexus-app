@@ -1,5 +1,23 @@
-import fs from 'fs';
-import path from 'path';
+import { getApps, initializeApp, cert } from 'firebase-admin/app';
+import { getFirestore } from 'firebase-admin/firestore';
+
+// Initialize Firebase Admin if not already initialized
+if (!getApps().length) {
+  try {
+    initializeApp({
+      credential: cert({
+        projectId: process.env.FIREBASE_PROJECT_ID,
+        clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+        // Handle newline characters in the private key string from env vars
+        privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
+      }),
+    });
+  } catch (error) {
+    console.error('Firebase admin initialization error', error);
+  }
+}
+
+export const db = getFirestore();
 
 // Define our types
 export type ApplicationStatus = 'Wishlist' | 'Applied' | 'Interviewing' | 'Offer' | 'Rejected';
@@ -32,37 +50,3 @@ export interface User {
     weekly: boolean;
   };
 }
-
-interface DatabaseSchema {
-  users: User[];
-  applications: Application[];
-}
-
-const DB_FILE_PATH = path.join(process.cwd(), 'data.json');
-
-// Initialize database file if it doesn't exist
-const initDb = () => {
-  if (!fs.existsSync(DB_FILE_PATH)) {
-    const initialData: DatabaseSchema = { users: [], applications: [] };
-    fs.writeFileSync(DB_FILE_PATH, JSON.stringify(initialData, null, 2), 'utf-8');
-  }
-};
-
-initDb();
-
-export const getDb = async (): Promise<DatabaseSchema> => {
-  try {
-    const data = await fs.promises.readFile(DB_FILE_PATH, 'utf-8');
-    return JSON.parse(data) as DatabaseSchema;
-  } catch (error) {
-    console.error('Failed to parse database, resetting to empty state:', error);
-    // If the database is corrupted, reset it to prevent the entire app from crashing
-    const initialData: DatabaseSchema = { users: [], applications: [] };
-    await saveDb(initialData);
-    return initialData;
-  }
-};
-
-export const saveDb = async (data: DatabaseSchema): Promise<void> => {
-  await fs.promises.writeFile(DB_FILE_PATH, JSON.stringify(data, null, 2), 'utf-8');
-};

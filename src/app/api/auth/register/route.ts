@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getDb, saveDb } from '@/lib/db';
+import { db } from '@/lib/db';
 import { hashPassword, generateToken } from '@/lib/auth';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -11,10 +11,11 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    const db = await getDb();
+    const usersRef = db.collection('users');
+    const snapshot = await usersRef.where('email', '==', email).get();
     
     // Check if user exists
-    if (db.users.find(u => u.email === email)) {
+    if (!snapshot.empty) {
       return NextResponse.json({ error: 'User already exists' }, { status: 409 });
     }
 
@@ -28,8 +29,7 @@ export async function POST(request: Request) {
       createdAt: new Date().toISOString()
     };
 
-    db.users.push(newUser);
-    await saveDb(db);
+    await usersRef.doc(newUser.id).set(newUser);
 
     const token = generateToken(newUser.id);
 

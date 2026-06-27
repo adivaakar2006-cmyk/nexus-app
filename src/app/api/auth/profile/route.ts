@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getDb, saveDb } from '@/lib/db';
+import { db, User } from '@/lib/db';
 import { verifyToken, hashPassword } from '@/lib/auth';
 
 const getUserId = (request: Request): string | null => {
@@ -18,38 +18,43 @@ export async function PUT(request: Request) {
     }
 
     const { name, email, password, twoFactorEnabled, plan, preferences } = await request.json();
-    const db = await getDb();
     
-    const userIndex = db.users.findIndex(u => u.id === userId);
-    if (userIndex === -1) {
+    const userRef = db.collection('users').doc(userId);
+    const userDoc = await userRef.get();
+    
+    if (!userDoc.exists) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
+    const userData = userDoc.data() as User;
+
     // Check if new email is already taken by someone else
-    if (email && email !== db.users[userIndex].email) {
-      if (db.users.find(u => u.email === email)) {
+    if (email && email !== userData.email) {
+      const emailCheck = await db.collection('users').where('email', '==', email).get();
+      if (!emailCheck.empty) {
         return NextResponse.json({ error: 'Email already in use' }, { status: 409 });
       }
     }
 
-    const updatedUser = { ...db.users[userIndex] };
+    const updates: any = {};
 
-    if (name !== undefined) updatedUser.name = name;
-    if (email !== undefined) updatedUser.email = email;
+    if (name !== undefined) updates.name = name;
+    if (email !== undefined) updates.email = email;
     if (password) {
-      updatedUser.passwordHash = await hashPassword(password);
+      updates.passwordHash = await hashPassword(password);
     }
-    if (twoFactorEnabled !== undefined) updatedUser.twoFactorEnabled = twoFactorEnabled;
-    if (plan !== undefined) updatedUser.plan = plan;
+    if (twoFactorEnabled !== undefined) updates.twoFactorEnabled = twoFactorEnabled;
+    if (plan !== undefined) updates.plan = plan;
     if (preferences !== undefined) {
-      updatedUser.preferences = {
-        ...updatedUser.preferences,
+      updates.preferences = {
+        ...(userData.preferences || {}),
         ...preferences
       };
     }
 
-    db.users[userIndex] = updatedUser;
-    await saveDb(db);
+    await userRef.update(updates);
+
+    const updatedUser = { ...userData, ...updates };
 
     return NextResponse.json({
       user: { 
