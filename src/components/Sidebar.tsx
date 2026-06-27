@@ -77,5 +77,6 @@ export default function Sidebar({ isOpen = false, onClose }: SidebarProps) {
         </button>
       </div>
     </aside>
+    </>
   );
 }
