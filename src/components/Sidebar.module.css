@@ -139,7 +139,7 @@
     padding: 1rem;
   }
 
-  .open {
+  .sidebar.open {
     transform: translateY(0);
   }
 
