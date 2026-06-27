@@ -124,19 +124,31 @@
 
 @media (max-width: 1024px) {
   .sidebar {
-    transform: translateX(-100%);
-    background: var(--bg-primary); /* Solid background on mobile */
+    transform: translateY(-150%);
+    background: var(--bg-card);
+    backdrop-filter: var(--glass-blur);
+    height: auto;
+    width: calc(100% - 2rem);
+    top: 70px;
+    left: 1rem;
+    right: 1rem;
+    bottom: auto;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-glass);
+    padding: 1rem;
   }
 
   .open {
-    transform: translateX(0);
+    transform: translateY(0);
   }
 
-  .closeBtn {
-    display: flex;
+  .logoHeader {
+    display: none; /* Hide logo in the card since it's already in the top header */
   }
 
   .overlay {
     display: block;
+    top: 60px; /* Start overlay below the mobile header */
   }
 }
