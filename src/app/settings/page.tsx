@@ -264,7 +264,7 @@ export default function Settings() {
             <section className={`glass ${styles.section} animate-fade-in-up`}>
               <div className={styles.sectionHeader}>
                 <h2>Security Settings</h2>
-                <p>Manage your account security and active sessions.</p>
+                <p>Manage your account security.</p>
               </div>
               <div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', paddingBottom: '1.5rem', borderBottom: '1px solid var(--border-color)' }}>
