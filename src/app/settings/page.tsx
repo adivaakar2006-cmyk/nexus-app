@@ -9,7 +9,7 @@ import { User, Shield, CreditCard, Bell, LogOut, CheckCircle, AlertCircle, X, Qr
 
 export default function Settings() {
   const { user, updateUser, logout } = useAuth();
-  const [activeTab, setActiveTab] = useState('profile');
+  const [activeTab, setActiveTab] = useState('security');
   const [message, setMessage] = useState({ type: '', text: '' });
   
   // Profile Form State
@@ -175,8 +175,8 @@ export default function Settings() {
   };
 
   const TABS = [
-    { id: 'profile', label: 'My Profile', icon: User },
     { id: 'security', label: 'Security', icon: Shield },
+    { id: 'profile', label: 'My Profile', icon: User },
     { id: 'billing', label: 'Billing & Plan', icon: CreditCard },
     { id: 'notifications', label: 'Notifications', icon: Bell },
   ];
