@@ -185,8 +185,13 @@ export default function Settings() {
     <div className={styles.container}>
       <header className={styles.header}>
         <div>
-          <h1>Settings</h1>
-          <p>Manage your account preferences and personal information</p>
+          <h1>{TABS.find(t => t.id === activeTab)?.label || 'Settings'}</h1>
+          <p>
+            {activeTab === 'security' && 'Manage your account security and active sessions.'}
+            {activeTab === 'profile' && 'Manage your account preferences and personal information'}
+            {activeTab === 'billing' && 'Manage your subscription and billing details.'}
+            {activeTab === 'notifications' && 'Choose what we email you about.'}
+          </p>
         </div>
       </header>
 
@@ -285,6 +290,49 @@ export default function Settings() {
                   )}
                 </div>
 
+                <div style={{ marginTop: '1.5rem', marginBottom: '1.5rem', paddingBottom: '1.5rem', borderBottom: '1px solid var(--border-color)' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                    <div>
+                      <h3 style={{ marginBottom: '0.25rem' }}>Active Sessions</h3>
+                      <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>
+                        Manage and log out your active sessions on other browsers and devices.
+                      </p>
+                    </div>
+                    <button className={styles.dangerBtn} onClick={() => showMessage('success', 'All other sessions have been logged out.')}>
+                      Revoke All Others
+                    </button>
+                  </div>
+
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1rem', background: 'rgba(255,255,255,0.02)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-sm)' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                        <div style={{ background: 'rgba(59, 130, 246, 0.1)', color: 'var(--accent-primary)', padding: '0.75rem', borderRadius: '50%' }}>
+                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+                        </div>
+                        <div>
+                          <div style={{ fontWeight: 500 }}>Windows PC • Chrome <span style={{ fontSize: '0.75rem', background: 'rgba(16, 185, 129, 0.1)', color: 'var(--status-offer)', padding: '0.1rem 0.4rem', borderRadius: '10px', marginLeft: '0.5rem' }}>Current</span></div>
+                          <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>San Francisco, USA • Active now</div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1rem', background: 'rgba(255,255,255,0.02)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-sm)' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                        <div style={{ background: 'rgba(255, 255, 255, 0.05)', color: 'var(--text-secondary)', padding: '0.75rem', borderRadius: '50%' }}>
+                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
+                        </div>
+                        <div>
+                          <div style={{ fontWeight: 500 }}>iPhone 14 Pro • Safari</div>
+                          <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>San Francisco, USA • Last active 2 hours ago</div>
+                        </div>
+                      </div>
+                      <button className={styles.tabBtn} style={{ padding: '0.5rem' }} onClick={() => showMessage('success', 'Session revoked successfully.')}>
+                        <X size={18} />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
                 <div style={{ marginTop: '1.5rem' }}>
                   <h3 style={{ marginBottom: '1rem' }}>Change Password</h3>
                   <form className={styles.form} onSubmit={handlePasswordSubmit}>
@@ -340,48 +388,7 @@ export default function Settings() {
                   </form>
                 </div>
 
-                <div style={{ marginTop: '2.5rem', paddingTop: '1.5rem', borderTop: '1px solid var(--border-color)' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                    <div>
-                      <h3 style={{ marginBottom: '0.25rem' }}>Active Sessions</h3>
-                      <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>
-                        Manage and log out your active sessions on other browsers and devices.
-                      </p>
-                    </div>
-                    <button className={styles.dangerBtn} onClick={() => showMessage('success', 'All other sessions have been logged out.')}>
-                      Revoke All Others
-                    </button>
-                  </div>
 
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1rem', background: 'rgba(255,255,255,0.02)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-sm)' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                        <div style={{ background: 'rgba(59, 130, 246, 0.1)', color: 'var(--accent-primary)', padding: '0.75rem', borderRadius: '50%' }}>
-                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
-                        </div>
-                        <div>
-                          <div style={{ fontWeight: 500 }}>Windows PC • Chrome <span style={{ fontSize: '0.75rem', background: 'rgba(16, 185, 129, 0.1)', color: 'var(--status-offer)', padding: '0.1rem 0.4rem', borderRadius: '10px', marginLeft: '0.5rem' }}>Current</span></div>
-                          <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>San Francisco, USA • Active now</div>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1rem', background: 'rgba(255,255,255,0.02)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-sm)' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                        <div style={{ background: 'rgba(255, 255, 255, 0.05)', color: 'var(--text-secondary)', padding: '0.75rem', borderRadius: '50%' }}>
-                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
-                        </div>
-                        <div>
-                          <div style={{ fontWeight: 500 }}>iPhone 14 Pro • Safari</div>
-                          <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>San Francisco, USA • Last active 2 hours ago</div>
-                        </div>
-                      </div>
-                      <button className={styles.tabBtn} style={{ padding: '0.5rem' }} onClick={() => showMessage('success', 'Session revoked successfully.')}>
-                        <X size={18} />
-                      </button>
-                    </div>
-                  </div>
-                </div>
               </div>
             </section>
           )}
