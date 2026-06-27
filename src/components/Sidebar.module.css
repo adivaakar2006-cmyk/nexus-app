@@ -1,24 +1,31 @@
 .sidebar {
-  width: var(--sidebar-width);
-  height: 100vh;
-  position: fixed;
-  top: 0;
-  left: 0;
-  background: rgba(15, 23, 42, 0.8); /* Slate 900 */
+  transform: translateY(-150%);
+  background: var(--bg-card);
   backdrop-filter: var(--glass-blur);
-  border-right: 1px solid var(--border-color);
-  padding: 1.5rem;
+  height: auto;
+  width: 300px;
+  max-width: calc(100% - 2rem);
+  position: fixed;
+  top: 70px;
+  left: 1rem;
+  right: auto;
+  bottom: auto;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-glass);
+  padding: 1rem;
   display: flex;
   flex-direction: column;
   z-index: 50;
-  transition: transform 0.3s ease;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.sidebar.open {
+  transform: translateY(0);
 }
 
 .logoHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 2.5rem;
+  display: none;
 }
 
 .logo {
@@ -114,9 +121,10 @@
 }
 
 .overlay {
-  display: none;
+  display: block;
   position: fixed;
   inset: 0;
+  top: 60px;
   background: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(2px);
   z-index: 40;
@@ -124,31 +132,6 @@
 
 @media (max-width: 1024px) {
   .sidebar {
-    transform: translateY(-150%);
-    background: var(--bg-card);
-    backdrop-filter: var(--glass-blur);
-    height: auto;
     width: calc(100% - 2rem);
-    top: 70px;
-    left: 1rem;
-    right: 1rem;
-    bottom: auto;
-    border-radius: var(--radius-md);
-    border: 1px solid var(--border-color);
-    box-shadow: var(--shadow-glass);
-    padding: 1rem;
-  }
-
-  .sidebar.open {
-    transform: translateY(0);
-  }
-
-  .logoHeader {
-    display: none; /* Hide logo in the card since it's already in the top header */
-  }
-
-  .overlay {
-    display: block;
-    top: 60px; /* Start overlay below the mobile header */
   }
 }
