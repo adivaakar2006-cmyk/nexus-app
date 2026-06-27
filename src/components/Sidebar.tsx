@@ -3,12 +3,17 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, KanbanSquare, Calendar as CalendarIcon, List, Settings, LogOut, Briefcase } from 'lucide-react';
+import { LayoutDashboard, KanbanSquare, Calendar as CalendarIcon, List, Settings, LogOut, Briefcase, X } from 'lucide-react';
 import styles from './Sidebar.module.css';
 import { useAuth } from '@/contexts/AuthContext';
 import clsx from 'clsx';
 
-export default function Sidebar() {
+interface SidebarProps {
+  isOpen?: boolean;
+  onClose?: () => void;
+}
+
+export default function Sidebar({ isOpen = false, onClose }: SidebarProps) {
   const pathname = usePathname();
   const { user, logout } = useAuth();
 
@@ -21,11 +26,21 @@ export default function Sidebar() {
   ];
 
   return (
-    <aside className={styles.sidebar}>
-      <Link href="/dashboard" className={styles.logo}>
-        <Briefcase size={24} color="var(--accent-primary)" />
-        Nexus
-      </Link>
+    <>
+      {/* Mobile overlay */}
+      {isOpen && (
+        <div className={styles.overlay} onClick={onClose} aria-hidden="true" />
+      )}
+      <aside className={`${styles.sidebar} ${isOpen ? styles.open : ''}`}>
+        <div className={styles.logoHeader}>
+          <Link href="/dashboard" className={styles.logo}>
+            <Briefcase size={24} color="var(--accent-primary)" />
+            Nexus
+          </Link>
+          <button className={styles.closeBtn} onClick={onClose} aria-label="Close sidebar">
+            <X size={24} />
+          </button>
+        </div>
 
       <nav className={styles.nav}>
         {navItems.map((item) => {
