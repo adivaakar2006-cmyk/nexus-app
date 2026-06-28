@@ -1,5 +1,6 @@
 # 🚀 Nexus: The Ultimate Job Application CRM
 
+![Nexus Banner](https://nexus-app-weld-seven.vercel.app/)
 ![Nexus Banner](https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1200&q=80)
 
 Nexus is a premium, commercial-grade Software as a Service (SaaS) application built to help software engineers systematically track, analyze, and optimize their job hunting pipelines. 
